@@ -1,0 +1,129 @@
+Program:3
+File name: Twitter.py
+import tweepy
+import pandas as pd
+bearer_token = "Paste Your API Token"
+client = tweepy.Client(
+bearer_token=bearer_token,
+wait_on_rate_limit=True
+)
+query = "digital marketing -is:retweet lang:en"
+data = []
+try:
+response = client.search_recent_tweets(
+query=query,
+max_results=20,
+tweet_fields=["created_at", "public_metrics", "author_id"]
+)
+if response.data:
+for tweet in response.data:
+data.append({
+"Tweet": tweet.text,
+"Date": tweet.created_at,
+"Author ID": tweet.author_id,
+"Likes": tweet.public_metrics["like_count"],
+"Retweets": tweet.public_metrics["retweet_count"],
+"Replies": tweet.public_metrics["reply_count"]
+})
+elif response.errors:
+print("Twitter API returned errors:")
+for error in response.errors:
+print(error)
+else:
+print("No tweets found for the current query.")
+except Exception as e:
+print("Twitter API request failed.")
+print(f"Reason: {e}")
+print("Check your internet connection, bearer token, and Twitter API access.")
+raise SystemExit(1)
+df = pd.DataFrame(data)
+print(df)
+df.to_csv("twitter_data.csv", index=False)
+print("\nData collected successfully.")
+
+Commands to Execute:
+pip install tweepy pandas
+python Twitter.py
+
+Program:4
+File name: Webscraping.py
+import requests
+from bs4 import BeautifulSoup
+url = "https://www.paruluniversity.ac.in/"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+print("Title:", soup.title.string if soup.title else "No Title")
+h1_tags = soup.find_all("h1")
+print("H1 Count:", len(h1_tags))
+for h1 in h1_tags:
+print("H1:", h1.get_text(strip=True))
+meta_tags = soup.find_all("meta")
+print("Meta Tags Count:", len(meta_tags))
+Commands to Execute:
+pip install requests beautifulsoup4
+python Webscraping.py
+
+
+Program:5
+File Name: Clean.py
+import pandas as pd
+data = {
+"user": ["Aman", "Riya", "Aman", "Kabir"],
+"text": [
+" AWS is GREAT! ",
+"Good cloud session",
+" AWS is GREAT! ",
+None
+]
+}
+df = pd.DataFrame(data)
+df = df.drop_duplicates()
+df["text"] = df["text"].fillna("")
+df["text"] = df["text"].str.strip().str.lower()
+print("Cleaned Data:")
+print(df)
+Commands to Execute:
+pip install pandas
+python preprocess_Clean.py
+
+
+Program:6
+File name: Data.py
+import pandas as pd
+df = pd.DataFrame({
+"post": ["Good product", "Bad service", "Good product", None],
+"likes": ["10", "5", "10", "3"]
+})
+print(df.info())
+df = df.drop_duplicates()
+df["post"] = df["post"].fillna("unknown")
+df["likes"] = pd.to_numeric(df["likes"], errors="coerce")
+df["likes"] = df["likes"].fillna(0)
+df.to_csv("processed_social_data.csv", index=False)
+print(df)
+print("Processed file saved.")
+Commands to Execute:
+pip install pandas
+python preprocess_Data.py
+
+
+Program:7
+File name: nltk_demo.py
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+nltk.download("punkt")
+nltk.download("punkt_tab")
+nltk.download("stopwords")
+text = "This is a very useful cloud computing course."
+tokens = word_tokenize(text)
+stop_words = set(stopwords.words("english"))
+filtered = [
+word for word in tokens
+if word.lower() not in stop_words
+]
+print("Tokens:", tokens)
+print("After stop word removal:", filtered)
+Commands to Execute:
+pip install nltk
+python nltk_demo.py
